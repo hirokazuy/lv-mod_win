@@ -31,7 +31,7 @@
 #include <dos.h>
 #endif /* MSDOS */
 
-#ifdef WINDOWS
+#ifdef WIN32
 #include <win32console.h>
 #endif
 
@@ -92,7 +92,7 @@ private void tputs( char *cp, int affcnt, int (*outc)(char) )
 private int (*putfunc)(char) = ConsolePrint;
 #endif /* MSDOS */
 
-#ifdef WINDOWS
+#ifdef WIN32
 private char tbuf[ 16 ];
 
 private char *clear_screen		= "\x1b[2J";
@@ -119,7 +119,7 @@ private void tputs( char *cp, int affcnt, int (*outc)(char) )
 }
 
 private int (*putfunc)(char) = Win32ConsolePrint;
-#endif /* WINDOWS */
+#endif /* WIN32 */
 
 #ifdef UNIX
 
@@ -182,7 +182,7 @@ public void ConsoleResetAnsiSequence()
   ansi_hilight		= "1";
 }
 
-#if defined(MSDOS) || defined(WINDOWS)
+#if defined(MSDOS) || defined(WIN32)
 private void InterruptIgnoreHandler( int arg )
 {
   signal( SIGINT, InterruptIgnoreHandler );
@@ -200,7 +200,7 @@ private RETSIGTYPE InterruptHandler( int arg )
 
 public void ConsoleEnableInterrupt()
 {
-#if defined(MSDOS) || defined(WINDOWS)
+#if defined(MSDOS) || defined(WIN32)
   allow_interrupt = TRUE;
   signal( SIGINT, InterruptHandler );
 #endif /* MSDOS */
@@ -219,7 +219,7 @@ public void ConsoleEnableInterrupt()
 
 public void ConsoleDisableInterrupt()
 {
-#if defined( MSDOS ) || defined(WINDOWS)
+#if defined( MSDOS ) || defined(WIN32)
   allow_interrupt = FALSE;
   signal( SIGINT, InterruptIgnoreHandler );
 #endif /* MSDOS */
@@ -324,9 +324,9 @@ public void ConsoleTermInit()
 
 #endif /* MSDOS */
 
-#ifdef WINDOWS
+#ifdef WIN32
   Win32ConsoleInit();
-#endif /* WINDOWS */
+#endif /* WIN32 */
 
 #ifdef TERMCAP
   byte *term, *ptr;
@@ -422,7 +422,7 @@ public void ConsoleTermInit()
 
 public void ConsoleSetUp()
 {
-#if defined(MSDOS) || defined(WINDOWS)
+#if defined(MSDOS) || defined(WIN32)
   signal( SIGINT, InterruptIgnoreHandler );
 #endif /* MSDOS */
 
@@ -484,7 +484,7 @@ public void ConsoleSetDown()
   ioctl( 0, TIOCSETN, &ttyOld );
 #endif /* HAVE_TERMIOS_H */
 #endif /* UNIX */
-#ifdef WINDOWS
+#ifdef WIN32
   Win32ConsoleSetDown();
 #endif
 
@@ -537,14 +537,14 @@ public void ConsoleReturnToProgram()
 
 public void ConsoleSuspend()
 {
-#ifndef MSDOS /* if NOT defind */
+#if !defined( MSDOS ) && !defined( WIN32 ) /* if NOT defind */
   kill(0, SIGSTOP);	/*to pgrp*/
 #endif
 }
 
 public int ConsoleGetChar()
 {
-#if defined( MSDOS ) || defined(WINDOWS)
+#if defined( MSDOS ) || defined(WIN32)
   return getch();
 #endif /* MSDOS */
 
@@ -582,9 +582,9 @@ public int ConsolePrint( byte c )
   return putchar( c );
 #endif /* UNIX */
 
-#ifdef WINDOWS
+#ifdef WIN32
   return Win32ConsolePrint(c);
-#endif /* WINDOWS */
+#endif /* WIN32 */
 }
 
 public void ConsolePrints( byte *str )
@@ -624,7 +624,7 @@ public void ConsoleSetCur( int x, int y )
   ConsolePrints( tbuf );
 #endif /* MSDOS */
 
-#ifdef WINDOWS
+#ifdef WIN32
   Win32ConsoleSetCur(x, y);
 #endif
 
@@ -651,7 +651,7 @@ public void ConsoleOffCur()
 
 public void ConsoleClearScreen()
 {
-#ifdef WINDOWS
+#ifdef WIN32
   Win32ConsoleClearScreen();
 #elif
   tputs( clear_screen, 1, putfunc );
@@ -660,7 +660,7 @@ public void ConsoleClearScreen()
 
 public void ConsoleClearRight()
 {
-#ifdef WINDOWS
+#ifdef WIN32
   Win32ConsoleClearRight();
 #elif
   tputs( clr_eol, 1, putfunc );
@@ -741,7 +741,7 @@ public void ConsoleSetAttribute( byte attr )
 	tputs( exit_underline_mode, 1, putfunc );
     if( ( ATTR_STANDOUT & prevAttr ) && 0 == ( ATTR_STANDOUT & attr ) )
       if( exit_standout_mode )
-#ifdef WINDOWS
+#ifdef WIN32
 	Win32ConsoleExitStandoutMode();
 #elif
 	tputs( exit_standout_mode, 1, putfunc );
@@ -755,7 +755,7 @@ public void ConsoleSetAttribute( byte attr )
 	tputs( enter_underline_mode, 1, putfunc );
     if( ATTR_STANDOUT & attr )
       if( enter_standout_mode )
-#ifdef WINDOWS
+#ifdef WIN32
 	Win32ConsoleEnterStandoutMode();
 #elif
 	tputs( enter_standout_mode, 1, putfunc );

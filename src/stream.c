@@ -36,7 +36,7 @@
 #include <dos.h>
 #endif /* MSDOS */
 
-#ifdef WINDOWS
+#ifdef WIN32
 #define dup( fd ) _dup( (fd) )
 #define fdopen(fd, mode) _fdopen((fd), (mode))
 #define fstat(fd, buf) _fstat((fd), (buf))
@@ -159,7 +159,7 @@ private void StdinDuplicationFailed()
 public stream_t *StreamReconnectStdin()
 {
   stream_t *st;
-#if defined(UNIX) || defined(WINDOWS)
+#if defined(UNIX) || defined(WIN32)
   struct stat sbuf;
 #endif
 
@@ -171,7 +171,7 @@ public stream_t *StreamReconnectStdin()
   close( 0 );
   dup( 1 );
 #endif /* MSDOS */
-#if defined(UNIX) || defined(WINDOWS)
+#if defined(UNIX) || defined(WIN32)
   fstat( 0, &sbuf );
   if( S_IFREG == ( sbuf.st_mode & S_IFMT ) ){
     /* regular */

@@ -65,14 +65,14 @@
 #define LV_CONF 	"_lv"
 #endif /* MSDOS */
 
-#ifdef WINDOWS
+#ifdef WIN32
 #define DEFAULT_OUTPUT_CODING_SYSTEM	SHIFT_JIS
 #define DEFAULT_KEYBOARD_CODING_SYSTEM	SHIFT_JIS
 #define DEFAULT_PATHNAME_CODING_SYSTEM	SHIFT_JIS
 #define DEFAULT_DEFAULT_CODING_SYSTEM	EUC_JAPAN
 
 #define LV_CONF 	"_lv"
-#endif /* WINDOWS */
+#endif /* WIN32 */
 
 #define BUF_SIZE 	128
 
@@ -419,7 +419,7 @@ public void ConfInit( byte **argv )
 #define helpFile	(*lvHelpFile)
   lvHelpFile[ 1 ] = NULL;
 
-#if defined(MSDOS) || defined(WINDOWS)
+#if defined(MSDOS) || defined(WIN32)
   {
     int i;
 

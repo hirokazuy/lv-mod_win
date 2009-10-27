@@ -219,7 +219,7 @@ public byte GuessCodingSystem( byte *str, int length, byte defaultEuc )
     use_locale = 0;
 
   if (use_locale) {
-#if !defined( MSDOS ) || !defined(WINDOWS) /* IF NOT DEFINED */
+#if !defined( MSDOS ) || !defined(WIN32) /* IF NOT DEFINED */
     /*
      * Since UTF-8 is a strict coding system, it is unlikely that
      * a non-UTF-8 file is accidently recognized as a UTF-8 file.

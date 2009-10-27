@@ -29,7 +29,7 @@
 #include <dos.h>
 #endif /* MSDOS */
 
-#ifdef WINDOWS
+#ifdef WIN32
 #include <windows.h>
 #endif
 
@@ -601,7 +601,7 @@ private int CommandLaunchEditor( byte *editor, byte *filename, int line )
 
 #ifdef MSDOS
   return spawnvp( 0, argv[ 0 ], argv );
-#elif WINDOWS
+#elif WIN32
   return _spawnvp( 0, argv[ 0 ], argv );
 #else
   if( 0 == (pid = fork()) ){
@@ -730,7 +730,7 @@ private void CommandPoll( unsigned int arg )
     ConsoleEnableInterrupt();
 
     while( 1 ){
-#ifdef WINDOWS
+#ifdef WIN32
       Sleep(300); // 300msec
 #else
       usleep(300000); // 300msec

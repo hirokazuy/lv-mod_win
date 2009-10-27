@@ -19,7 +19,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifdef WINDOWS
+#ifdef WIN32
 #include <assert.h>
 
 #include <windows.h>
@@ -170,4 +170,4 @@ public void Win32ConsoleExitStandoutMode() {
   SetConsoleTextAttribute(g_lv_console_handle, dwAttribute);
 }
 
-#endif /* WINDOWS */
+#endif /* WIN32 */
