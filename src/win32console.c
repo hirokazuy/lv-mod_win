@@ -36,66 +36,66 @@ private WORD g_fg_color;
 private WORD g_bg_color;
 
 private void Win32ConsoleSetColor(WORD fg, WORD bg) {
-	assert(g_lv_console_handle != INVALID_HANDLE_VALUE);
+  assert(g_lv_console_handle != INVALID_HANDLE_VALUE);
 
-	SetConsoleTextAttribute(g_lv_console_handle, (fg << 4 | bg));
+  SetConsoleTextAttribute(g_lv_console_handle, (fg << 4 | bg));
 }
 
 private WORD getFGColor(WORD wAttr) {
-	return (wAttr >> 4) & 0x0f;
+  return (wAttr >> 4) & 0x0f;
 }
 
 private WORD getBGColor(WORD wAttr) {
-	return wAttr & 0x0f;
+  return wAttr & 0x0f;
 }
 
 public void Win32ConsoleInit() {
-	CONSOLE_SCREEN_BUFFER_INFO cinfo;
+  CONSOLE_SCREEN_BUFFER_INFO cinfo;
 
-	g_lv_console_handle = INVALID_HANDLE_VALUE;
-	g_original_console_handle = GetStdHandle( STD_OUTPUT_HANDLE );
-	if (g_original_console_handle == INVALID_HANDLE_VALUE)
-		return;
+  g_lv_console_handle = INVALID_HANDLE_VALUE;
+  g_original_console_handle = GetStdHandle( STD_OUTPUT_HANDLE );
+  if (g_original_console_handle == INVALID_HANDLE_VALUE)
+    return;
 
-	GetConsoleScreenBufferInfo(g_original_console_handle, &cinfo);
-	g_fg_color = getFGColor(cinfo.wAttributes);
-	g_bg_color = getBGColor(cinfo.wAttributes);
+  GetConsoleScreenBufferInfo(g_original_console_handle, &cinfo);
+  g_fg_color = getFGColor(cinfo.wAttributes);
+  g_bg_color = getBGColor(cinfo.wAttributes);
 
-	Win32ConsoleSetUp();
+  Win32ConsoleSetUp();
 
-	Win32ConsoleSetColor( g_fg_color, g_bg_color );
+  Win32ConsoleSetColor( g_fg_color, g_bg_color );
 }
 
 
 public void Win32ConsoleSetUp() {
-	COORD size;
-	CONSOLE_SCREEN_BUFFER_INFO cinfo;
+  COORD size;
+  CONSOLE_SCREEN_BUFFER_INFO cinfo;
 
-	GetConsoleScreenBufferInfo(g_original_console_handle, &cinfo);
+  GetConsoleScreenBufferInfo(g_original_console_handle, &cinfo);
 
-	if (g_lv_console_handle == INVALID_HANDLE_VALUE) {
-		g_lv_console_handle = CreateConsoleScreenBuffer(
-			GENERIC_READ | GENERIC_WRITE,
-			FILE_SHARE_READ | FILE_SHARE_WRITE,
-			NULL,
-			CONSOLE_TEXTMODE_BUFFER,
-			NULL);
-	}
-	size.X = cinfo.srWindow.Right - cinfo.srWindow.Left + 1;
-	size.Y = cinfo.srWindow.Bottom - cinfo.srWindow.Top + 1;
-	SetConsoleScreenBufferSize(g_lv_console_handle, size);
-	SetConsoleActiveScreenBuffer(g_lv_console_handle);
+  if (g_lv_console_handle == INVALID_HANDLE_VALUE) {
+    g_lv_console_handle = CreateConsoleScreenBuffer(
+      GENERIC_READ | GENERIC_WRITE,
+      FILE_SHARE_READ | FILE_SHARE_WRITE,
+      NULL,
+      CONSOLE_TEXTMODE_BUFFER,
+      NULL);
+  }
+  size.X = cinfo.srWindow.Right - cinfo.srWindow.Left + 1;
+  size.Y = cinfo.srWindow.Bottom - cinfo.srWindow.Top + 1;
+  SetConsoleScreenBufferSize(g_lv_console_handle, size);
+  SetConsoleActiveScreenBuffer(g_lv_console_handle);
 }
 
 public void Win32ConsoleSetDown() {
-	if (g_original_console_handle == INVALID_HANDLE_VALUE) {
-		return;
-	}
-	if (g_lv_console_handle != INVALID_HANDLE_VALUE) {
-		SetConsoleActiveScreenBuffer(g_original_console_handle);
-		CloseHandle(g_lv_console_handle);
-		g_lv_console_handle = INVALID_HANDLE_VALUE;
-	}
+  if (g_original_console_handle == INVALID_HANDLE_VALUE) {
+    return;
+  }
+  if (g_lv_console_handle != INVALID_HANDLE_VALUE) {
+    SetConsoleActiveScreenBuffer(g_original_console_handle);
+    CloseHandle(g_lv_console_handle);
+    g_lv_console_handle = INVALID_HANDLE_VALUE;
+  }
 }
 
 
@@ -109,9 +109,6 @@ public void Win32ConsoleGetWindowSize() {
 public int Win32ConsolePrint(byte ch) {
   DWORD write = 0;
   BOOL ret = WriteConsole(g_lv_console_handle, &ch, 1, &write, NULL);
-  if (ret) {
-	return ret;
-  }
   return write;
 }
 
