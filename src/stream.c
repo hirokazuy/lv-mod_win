@@ -36,6 +36,13 @@
 #include <dos.h>
 #endif /* MSDOS */
 
+#ifdef WINDOWS
+#define dup( fd ) _dup( (fd) )
+#define fdopen(fd, mode) _fdopen((fd), (mode))
+#define fstat(fd, buf) _fstat((fd), (buf))
+#define stat _stat
+#endif
+
 #include <import.h>
 #include <uty.h>
 #include <begin.h>
@@ -152,7 +159,7 @@ private void StdinDuplicationFailed()
 public stream_t *StreamReconnectStdin()
 {
   stream_t *st;
-#ifdef UNIX
+#if defined(UNIX) || defined(WINDOWS)
   struct stat sbuf;
 #endif
 
@@ -164,7 +171,7 @@ public stream_t *StreamReconnectStdin()
   close( 0 );
   dup( 1 );
 #endif /* MSDOS */
-#ifdef UNIX
+#if defined(UNIX) || defined(WINDOWS)
   fstat( 0, &sbuf );
   if( S_IFREG == ( sbuf.st_mode & S_IFMT ) ){
     /* regular */
@@ -178,8 +185,10 @@ public stream_t *StreamReconnectStdin()
       StdinDuplicationFailed();
   }
   close( 0 );
+#ifdef UNIX
   if( IsAtty( 1 ) && 0 != open( "/dev/tty", O_RDONLY ) )
     perror( "/dev/tty" ), exit( -1 );
+#endif
 #endif /* UNIX */
 
   return st;

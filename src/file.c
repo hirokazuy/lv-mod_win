@@ -28,6 +28,10 @@
 #include <dos.h>
 #endif /* MSDOS */
 
+#ifdef WINDOWS
+#include <windows.h>
+#endif
+
 #ifdef UNIX
 #include <unistd.h>
 #include <fcntl.h>
@@ -249,10 +253,12 @@ public boolean_t FileStretch( file_t *f, unsigned int target )
 	  return FALSE;
       }
     }
+#ifdef UNIX
     if( -1 != f->pid && feof( f->sp ) ){
       int status;
       wait( &status );
     }
+#endif
   } else {
 #endif /* MSDOS */
     while( EOF != (ch = getc( f->fp )) ){
